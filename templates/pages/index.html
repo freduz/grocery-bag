@@ -1,0 +1,121 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <!-- top -->
+  <div class="row">
+    <div class="col-lg-6">
+      <h1>View Grocery List</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <a href="{% url 'add-item' %}"
+            class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Add Item</a
+          >
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6"> <h6>
+              Welcome {{user.first_name}}</h6></div>
+            <div class="col-md-6"><a
+              href="javascript:{document.getElementById('logout').submit()}"
+              class="btn btn-sm btn-primary"
+            >
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a></div>
+          </div>
+         
+            
+        
+
+          <form action="{% url 'logout' %}" id="logout" method="post">
+            {% csrf_token %}
+
+            <input type="hidden" />
+          </form>
+        </div>
+      </div>
+    </div>
+    
+      <div class="col-lg-6 float-right">
+        <form action="{% url 'search-item' %}" method="GET" >
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Date Filtering-->
+            <input type="date" class="form-control" name="item-date"/>
+          </div>
+          <div class="col-lg-4">
+            <input type="submit" class="btn btn-danger" value="filter" />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- // top -->
+  <!-- Grocery Cards -->
+  <div class="row mt-4">
+    <!--- -->
+    <!-- Loop This -->
+    {% if item_list %} {% for item in item_list %}
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{item.item_name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{item.item_qty}}</h6>
+          <p class="text-success">{{item.item_status}}</p>
+          <div class="row">
+            <div class="col-md-6">
+              <a
+                href="{% url 'update-item' item.id %}"
+                class="btn btn-sm btn-primary"
+                ><i class="fas fa-edit"></i> Update</a
+              >
+            </div>
+            <div class="col-md-6">
+              <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                onclick="return deleteItem({{item.id}})"
+                data-id="{{item.id}}"
+              >
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %} {% else %}
+
+    <h1>No items found</h1>
+    <!-- // Loop -->
+    {% endif %}
+  </div>
+</div>
+<script>
+  // document.querySelector("#delete-item").addEventListener("click", deleteItem);
+
+  function deleteItem(e) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:8000/delete/${e}`)
+          .then((response) => response.text())
+          .then((res) => {
+            if (res === "ok") {
+              Swal.fire(
+                "Deleted!",
+                "Your item has been deleted.",
+                "success"
+              ).then((el) => window.location.reload());
+            }
+          });
+      }
+    });
+  }
+</script>
+{% endblock content %}

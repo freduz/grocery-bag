@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <h1>Update Grocery List</h1>
+  <form id="updateGrocery" action="{% url 'update-data' %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Item name</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Item name"
+        value="{{item_data.item_name}}"
+        name="item_name"
+      />
+      <input type="hidden" name="item_id" value="{{item_data.id}}">
+    </div>
+    <div class="form-group">
+      <label>Item quantity</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Item quantity"
+        value="{{item_data.item_qty}}"
+        name="item_qty"
+      />
+    </div>
+    <div class="form-group">
+      <label>Item status</label>
+      <select class="form-control" name="item_status">
+                     
+                      <option value="PENDING" {% if item_data.item_status == 'PENDING' %} selected {% endif %}>PENDING</option>
+                      <option value="BOUGHT" {% if item_data.item_status == 'BOUGHT' %} selected {% endif %}>BOUGHT</option>
+                      <option value="NOT AVAILABLE" {% if item_data.item_status == 'NOT AVAILABLE' %} selected {% endif %}>NOT AVAILABLE</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input
+        type="date"
+        class="form-control"
+        placeholder="Date"
+        value="{{item_data.item_date}}"
+        name="item_date"
+
+      />
+      
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+        <div class="form-group">
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-edit"></i> Update
+          </button>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <a href="{% url 'home-page' %}" class="btn btn-primary"
+            ><i class="fas fa-arrow-left"></i> Back</a
+          >
+        </div>
+      </div>
+    </div>
+   
+  </form>
+</div>
+
+{% endblock %}
